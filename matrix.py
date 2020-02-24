@@ -10,11 +10,11 @@ aux = np.arange(0,10)
 matrix = np.arange(0,40)
 
 #Codigo para graficar los valores
-"""x = np.arange(0,65536)#Generamos los valores de x
+x = np.arange(0,65536)#Generamos los valores de x
 def f(x):
     return 10000000e300*np.take(data,x)#Obtenemos la correspondencia del vector
 plt.plot(x,f(x))#Graficamos
-plt.show()#Mostramos en pantalla"""
+plt.show()#Mostramos en pantalla
 
 #Código para girar las filas impares
 for i in range(40):
@@ -31,6 +31,23 @@ for i in range(40):
 		if(turn==True):
 			matrix[i]=aux[-(cont+1)]
 		cont=cont+1
-		
+
+"""#Codigo para recortar la imagen, quitamos elementos la matriz
+recorte=2
+contRow=0
+indices = np.arange(0,16)
+for k in range(40):
+        if (contRow==9):
+                contRow=0
+        else:
+                if (contRow<recorte):
+                        indices=k
+                else:
+                        if (contRow>10-1-recorte):
+                                indices=k
+#matrix=np.delete(matrix,0)
+print(indices)"""
 print (matrix)
 binaryFile.close()
+
+#Para mas informacion consulta: https://github.com/CharlieBrianML/InstitutoFisiologiaCelularSS
