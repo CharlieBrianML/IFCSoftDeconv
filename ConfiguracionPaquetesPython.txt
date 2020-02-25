@@ -1,0 +1,10 @@
+run pip install opencv-python
+run pip install opencv-contrib-python
+run pip install opencv-python-headless
+run pip install opencv-contrib-python-headless
+
+pip3 install numpy or apt-get install python3-numpy. You may need to apt-get install python3-pip.
+
+pip3 install matplotlib or apt-get install python3-matplotlib.
+
+apt-get install python3-OpenCV
