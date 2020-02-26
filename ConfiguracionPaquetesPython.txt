@@ -8,3 +8,19 @@ pip3 install numpy or apt-get install python3-numpy. You may need to apt-get ins
 pip3 install matplotlib or apt-get install python3-matplotlib.
 
 apt-get install python3-OpenCV
+
+Desinstalar OpenCV
+sudo apt-get purge libopencv*
+sudo dpkg -r opencv
+
+Cheque
+sudo dpkg -r opencv
+
+Luego, vaya al directorio de compilación y
+sudo make uninstall
+
+Después, puede reconstruir con este comando make
+cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=/usr/local -DFORCE_VTK=ON -DWITH_TBB=ON -DWITH_V4L=ON -DWITH_QT=ON -DWITH_OPENGL=ON -DWITH_CUBLAS=ON -DCUDA_NVCC_FLAGS="-D_FORCE_INLINES" -DWITH_GDAL=ON -DWITH_XINE=ON -DBUILD_EXAMPLES=ON ..
+
+Y luego, finalmente
+sudo make install
