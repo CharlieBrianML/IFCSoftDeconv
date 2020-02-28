@@ -10,27 +10,16 @@ cont=0
 turn=False
 aux = np.arange(0,255)
 matrix = np.arange(0,40)
-print(data)
+#print(data)
+imagen_blanca = np.ones((255,255))
+imagen_negra = np.zeros((255,255))
 
 #Transformacion del arreglo unidimensional a bidimencional
 def transformar(data):
     contRow=0
     matrixB = np.empty((256, 256))
-    #aux = np.array([[None, None, None, None, None, None, None, None, None, None]])
     aux = np.empty((1, 255))
-    #matrixB = np.arange(0,10)
     matrixB=np.reshape(data,(-1,256))
-    """for l in range(65536):
-            if (contRow==255):
-                aux[0][contRow]=data[l]*10e100
-                #matrixB = numpy.array([[1, 2, 3], [4, 5, 6]])
-                matrixB = np.append(matrixB, aux, axis = 0)
-                contRow=0
-            else:
-                aux[0][contRow]=data[l]*10e100
-                contRow=contRow+1
-    #print(matrixB)
-    #print(aux)"""
     return matrixB
 
 #Codigo para graficar los valores
@@ -65,13 +54,14 @@ def girar(data):
                     contG=contG+1
 
 def crearImagen(matrixB):
-    plt.rcParams['image.cmap'] = 'Blues' #Escala para la imagen
-    #cv2.imwrite("MyImage.png",matrixB)
+    plt.rcParams['image.cmap'] = 'Blues_r' #Escala para la imagen
+    cv2.imwrite("MyImage.png",matrixB)
     #img = cv2.imread("MyImage.png")
     #gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     #plt.imshow(img, cmap='gray')
     #imagen_blanca = np.ones((255,255))*0.8
-    plt.imshow(matrixB, vmin=0,vmax=1)
+    plt.imshow(imagen_blanca, vmin=0,vmax=1,cmap=plt.cm.Blues)
+    rgbint || 256
     plt.show()
     #cv2.imshow("Gray Scale Image", gray_img)
     #cv2.waitKey(0)
@@ -95,19 +85,21 @@ def recortar():
     #matrix=np.delete(matrix,0)
     print(indices)
 
-def normalizar():
-    for m in range(65536):
-        data[m]=data[m]*0.1
+def normalizar(data):
+    for p in range(65535):
+        data[p]=(data[p]*256)/4.6
+        #data[p]=data[p]*0.1
 
-graficar(data)
-girar(data)
-normalizar()
-print("\ndata:",data.size,data,"\n")
+#graficar(data)
+normalizar(data)
+#graficar(data)
+#girar(data)
+#graficar(data)
 matrixB=transformar(data) #Covension R1 --> R2
 #matrixG=girar(matrixB)
 crearImagen(matrixB)
-print ("\n",matrixB[0][2],"\n")
-print (data[2])
 binaryFile.close()
 
-#Para mas informacion consulta: https://github.com/CharlieBrianML/InstitutoFisiologiaCelularSS
+https://www.unioviedo.es/compnum/laboratorios_py/Intro_imagen/introduccion_imagen.html
+https://claudiovz.github.io/scipy-lecture-notes-ES/advanced/image_processing/index.html
+https://facundoq.github.io/courses/aa2018/res/04_imagenes_numpy.html
