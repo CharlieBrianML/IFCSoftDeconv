@@ -24,3 +24,10 @@ cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=/usr/local -DFORCE_VTK=O
 
 Y luego, finalmente
 sudo make install
+
+imagen_blanca = np.ones((255,255,3), dtype = np.uint8)
+imagen_negra = np.zeros((255,255))
+print(imagen_blanca)
+for n in range(255):
+    for p in range(255):
+        imagen_blanca[n][p][2]=255
