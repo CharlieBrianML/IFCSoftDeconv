@@ -11,8 +11,9 @@ turn=False
 aux = np.arange(0,255)
 matrix = np.arange(0,40)
 #print(data)
-imagen_blanca = np.ones((255,255))
+imagen_blanca = np.ones((255,255), dtype = np.uint8)*255
 imagen_negra = np.zeros((255,255))
+print(imagen_blanca)
 
 #Transformacion del arreglo unidimensional a bidimencional
 def transformar(data):
@@ -54,14 +55,15 @@ def girar(data):
                     contG=contG+1
 
 def crearImagen(matrixB):
-    plt.rcParams['image.cmap'] = 'Blues_r' #Escala para la imagen
-    cv2.imwrite("MyImage.png",matrixB)
+	#img = cv2.imread("matrizRecorte.png")
+	#print(img)
+    #plt.rcParams['image.cmap'] = 'Blues_r' #Escala para la imagen
+    cv2.imwrite("MyImage.png",imagen_blanca)
     #img = cv2.imread("MyImage.png")
     #gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     #plt.imshow(img, cmap='gray')
     #imagen_blanca = np.ones((255,255))*0.8
     plt.imshow(imagen_blanca, vmin=0,vmax=1,cmap=plt.cm.Blues)
-    rgbint || 256
     plt.show()
     #cv2.imshow("Gray Scale Image", gray_img)
     #cv2.waitKey(0)
@@ -100,6 +102,6 @@ matrixB=transformar(data) #Covension R1 --> R2
 crearImagen(matrixB)
 binaryFile.close()
 
-https://www.unioviedo.es/compnum/laboratorios_py/Intro_imagen/introduccion_imagen.html
+"""https://www.unioviedo.es/compnum/laboratorios_py/Intro_imagen/introduccion_imagen.html
 https://claudiovz.github.io/scipy-lecture-notes-ES/advanced/image_processing/index.html
-https://facundoq.github.io/courses/aa2018/res/04_imagenes_numpy.html
+https://facundoq.github.io/courses/aa2018/res/04_imagenes_numpy.html"""
