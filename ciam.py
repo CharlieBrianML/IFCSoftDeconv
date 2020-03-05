@@ -51,6 +51,13 @@ def girar(matrixB):
 				matrixB[i][l]=aux[-(l+1)]
 		turn=not(turn)
 	return matrixB
+    
+#Código para ajutar la fase de las filas 
+def fase(numFase):
+	aux = np.empty((256))
+	for i in range(256*256):
+        aux=aux
+	return matrixB
 
 #Codigo para crear la imagen a partir de una matriz R3
 def crearImagen(imagen):
