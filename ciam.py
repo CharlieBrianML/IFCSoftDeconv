@@ -24,9 +24,9 @@ def normalizar(data):
 
 #Transformacion del arreglo unidimensional a bidimencional
 def transformarR1R2(data):
-    contRow=0
+    #contRow=0
     matrixB = np.empty((256, 256))
-    aux = np.empty((1, 255))
+    #aux = np.empty((1, 255))
     matrixB=np.reshape(data,(-1,256))
     return matrixB
 
@@ -41,17 +41,16 @@ def transformarR2R3(matrixB):
 
 #Código para girar las filas impares
 def girar(matrixB):
-    turn=False
-    aux = np.empty((1, 255))
-    for i in range(256):
-        for j in range(256):
-            if (j==255):
-                    if(turn==True):
-                            for k in range(255):
-                                    aux[k]=data[i][k]
-                            for l in range(255):
-                                    data[i][l]=aux[l]
-        not(turn)
+	turn=False
+	aux = np.empty((256))
+	for i in range(256):
+		if(turn==True):
+			for k in range(256):
+				aux[k]=matrixB[i][k]
+			for l in range(256):
+				matrixB[i][l]=aux[-(l+1)]
+		turn=not(turn)
+	return matrixB
 
 #Codigo para crear la imagen a partir de una matriz R3
 def crearImagen(imagen):
