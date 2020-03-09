@@ -53,39 +53,45 @@ def girar(matrixB):
 	return matrixB
     
 #Código para ajutar la fase de las filas 
-def fase(numFase):
-	aux = np.empty((256))
-	for i in range(256*256):
-        aux=aux
-	return matrixB
+def right(dataDesf,numElm):
+    dataAux = np.empty(numElm)
+    for i in range(numElm):
+        if(i==(numElm-1)):
+            dataAux[i]=dataDesf[0]
+        else:
+            dataAux[i]=dataDesf[i+1]
+    return dataAux
+    
+def fase(numFase,dataDesf):
+    numElm=len(dataDesf)
+    for j in range(numFase):
+        dataDesf=right(dataDesf,numElm)
+    return dataDesf
+    
+def acoplar(numAcoplo,data):
+    acoplo=True
+    for i in range(256):
+        if(acoplo==True):
+            data[i,:]=fase(numAcoplo,data[i,:])
+        acoplo=not(acoplo)
+    return data
 
 #Codigo para crear la imagen a partir de una matriz R3
 def crearImagen(imagen):
     cv2.imwrite("MyImage.png",imagen)
-    plt.imshow(imagen)
-    plt.show()
+    #plt.imshow(imagen)
+    #plt.show()
     """cv2.imshow("Imagen",imagen)
     cv2.waitKey(0)
     cv2.destroyAllWindows()"""
 
     
 #Codigo para recortar la imagen, quitamos elementos la matriz
-def recortar():
-    recorte=2
-    contRow=0
-    indices = np.arange(0,16)
-    for k in range(40):
-            if (contRow==9):
-                    contRow=0
-            else:
-                    if (contRow<recorte):
-                            indices=k
-                    else:
-                            if (contRow>10-1-recorte):
-                                    indices=k
-    #matrix=np.delete(matrix,0)
-    print(indices)
-        
+def recortar(matrixCouple,numRecorte):
+    columna=255-(np.arange(0,numRecorte))
+    matrixR=np.delete(matrixCouple, columna, axis=1)
+    return matrixR
+    
 #Funcion para elegir el canal de la matriz       
 def elegirCanal(canal,matrixT):
     imagen = np.empty((256, 256,3))
@@ -111,17 +117,24 @@ def main(params):
         action=params[i]
         if(action=='-g'):
             graficar(data)
-        if(action=='R' or action=='G' or action=='B' or action=='RGB'):
+        """if(action=='R' or action=='G' or action=='B' or action=='RGB'):
             normalizar(data)
-            #graficar(data)
-            #girar(data)
-            #graficar(data)
             matrixB=transformarR1R2(data) #Covension R1 --> R2
             matrixBG=girar(matrixB)
-            matrixT=transformarR2R3(matrixBG) #Covension R2 --> R3
+            matrixCouple=acoplar(20,matrixBG)
+            matrixT=transformarR2R3(matrixCouple) #Covension R2 --> R3
             imagen=elegirCanal(action,matrixT)
-            #matrixG=girar(matrixB)
-            crearImagen(imagen)
+            crearImagen(imagen)"""
+        if(i==1):
+            if(action=='R' or action=='G' or action=='B' or action=='RGB'):
+                normalizar(data)
+                matrixB=transformarR1R2(data) #Covension R1 --> R2
+                matrixBG=girar(matrixB)
+                matrixCouple=acoplar(int(params[i+1]),matrixBG)
+                matrixR=recortar(matrixCouple,int(params[i+1]))
+                matrixT=transformarR2R3(matrixCouple) #Covension R2 --> R3
+                imagen=elegirCanal(action,matrixT)
+                crearImagen(imagen)
 
 main(sys.argv)
 
