@@ -6,6 +6,7 @@ data2 = np.array([1,2,3,4,5,6,7,8,9])
 binaryFile = open("imagen2.dat", mode='rb')#Abrimos el archivo en modo binario
 dataa = np.fromfile(binaryFile, dtype='d') # reads the whole file
 print("Longitud: ",len(dataa))
+print("Dimension: ",data.shape[1])
 
 def girar(data):
 	turn=False

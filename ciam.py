@@ -1,16 +1,19 @@
 import sys
+import math
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 
-binaryFile = open("imagen1.dat", mode='rb')#Abrimos el archivo en modo binario
-data = np.fromfile(binaryFile, dtype='d') # reads the whole file
-
+def leerArchivo(nombre):
+    binaryFile = open(nombre, mode='rb')#Abrimos el archivo en modo binario
+    data = np.fromfile(binaryFile, dtype='d') # reads the whole file
+    binaryFile.close()
+    return data
         
 #Codigo para graficar los valores
 def graficar(data):
     #data.ndim
-    x = np.arange(0,65536)#Generamos los valores de x
+    x = np.arange(0,len(data))#Generamos los valores de x
     def f(x):
         return np.take(data,x)#Obtenemos la correspondencia del vector
     plt.plot(x,f(x))#Graficamos
@@ -18,36 +21,39 @@ def graficar(data):
 
 #Funcion para normalizar los valores
 def normalizar(data):
-    for p in range(65535):
+    for p in range(len(data)):
         data[p]=(data[p]*256)/4.6  #Formula para normalizar los valores de [0, 255]
 
+def promediar(data,dim):
+    dataP = np.empty((dim, dim))
+    for i in range(0):
+    
 
 #Transformacion del arreglo unidimensional a bidimencional
 def transformarR1R2(data):
-    #contRow=0
-    matrixB = np.empty((256, 256))
-    #aux = np.empty((1, 255))
-    matrixB=np.reshape(data,(-1,256))
+    dim=int(math.sqrt(len(data)))
+    matrixB = np.empty((dim, dim))
+    matrixB=np.reshape(data,(-1,dim))
     return matrixB
 
 #Transformacion del arreglo bidimensional a tridimencional    
 def transformarR2R3(matrixB):
-    matrixT = np.empty((256, 256,3))
+    matrixT = np.empty((matrixB.shape[0], matrixB.shape[1],3))
     for m in range(3):
-        for n in range(256):
-            for p in range(256):
+        for n in range(matrixB.shape[0]):
+            for p in range(matrixB.shape[1]):
                 matrixT[n][p][m]=matrixB[n][p]
     return matrixT
 
 #Código para girar las filas impares
 def girar(matrixB):
 	turn=False
-	aux = np.empty((256))
-	for i in range(256):
+	aux = np.empty((matrixB.shape[1]))
+	for i in range(matrixB.shape[1]):
 		if(turn==True):
-			for k in range(256):
+			for k in range(matrixB.shape[1]):
 				aux[k]=matrixB[i][k]
-			for l in range(256):
+			for l in range(matrixB.shape[1]):
 				matrixB[i][l]=aux[-(l+1)]
 		turn=not(turn)
 	return matrixB
@@ -68,13 +74,13 @@ def fase(numFase,dataDesf):
         dataDesf=right(dataDesf,numElm)
     return dataDesf
     
-def acoplar(numAcoplo,data):
+def acoplar(numAcoplo,matrixBG):
     acoplo=True
-    for i in range(256):
+    for i in range(matrixBG.shape[1]):
         if(acoplo==True):
-            data[i,:]=fase(numAcoplo,data[i,:])
+            matrixBG[i,:]=fase(numAcoplo,matrixBG[i,:])
         acoplo=not(acoplo)
-    return data
+    return matrixBG
 
 #Codigo para crear la imagen a partir de una matriz R3
 def crearImagen(imagen):
@@ -94,7 +100,7 @@ def recortar(matrixCouple,numRecorte):
     
 #Funcion para elegir el canal de la matriz       
 def elegirCanal(canal,matrixT):
-    imagen = np.empty((256, 256,3))
+    imagen = np.empty((matrixT.shape[0], matrixT.shape[1],3))
     if(canal=='R'):
         indices=[1,2]
     if(canal=='G'):
@@ -104,38 +110,36 @@ def elegirCanal(canal,matrixT):
     if(canal=='RGB'):
         indices=[]
     for m in indices:
-        for n in range(256):
-            for p in range(256):
+        for n in range(matrixT.shape[0]):
+            for p in range(matrixT.shape[1]):
                 matrixT[n][p][m]=0
     imagen=matrixT
     return imagen
-
+    
+def construirImagen(data,canal,desp):
+    normalizar(data)
+    matrixB=transformarR1R2(data) #Covension R1 --> R2
+    matrixBG=girar(matrixB)
+    matrixCouple=acoplar(int(desp),matrixBG)
+    matrixR=recortar(matrixCouple,int(desp))
+    matrixT=transformarR2R3(matrixCouple) #Covension R2 --> R3
+    imagen=elegirCanal(canal,matrixT)
+    crearImagen(imagen)
 
 def main(params):
     numParams=len(sys.argv)
     for i in range(numParams):
         action=params[i]
-        if(action=='-g'):
-            graficar(data)
-        """if(action=='R' or action=='G' or action=='B' or action=='RGB'):
-            normalizar(data)
-            matrixB=transformarR1R2(data) #Covension R1 --> R2
-            matrixBG=girar(matrixB)
-            matrixCouple=acoplar(20,matrixBG)
-            matrixT=transformarR2R3(matrixCouple) #Covension R2 --> R3
-            imagen=elegirCanal(action,matrixT)
-            crearImagen(imagen)"""
-        if(i==1):
-            if(action=='R' or action=='G' or action=='B' or action=='RGB'):
-                normalizar(data)
-                matrixB=transformarR1R2(data) #Covension R1 --> R2
-                matrixBG=girar(matrixB)
-                matrixCouple=acoplar(int(params[i+1]),matrixBG)
-                matrixR=recortar(matrixCouple,int(params[i+1]))
-                matrixT=transformarR2R3(matrixCouple) #Covension R2 --> R3
-                imagen=elegirCanal(action,matrixT)
-                crearImagen(imagen)
-
+        if(numParams==1):
+            print("Archivo de lectura no especificado")
+        if(numParams==2):
+            data=leerArchivo(params[1])
+            construirImagen(data,"RGB",0)
+        if(numParams==3):
+            data=leerArchivo(params[1])
+            construirImagen(data,params[2],0)
+        if(numParams==4):
+            data=leerArchivo(params[1])
+            construirImagen(data,params[2],params[3])
+                
 main(sys.argv)
-
-binaryFile.close()
