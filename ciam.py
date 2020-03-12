@@ -56,7 +56,7 @@ def girar(matrixB):
     turn=False
     aux = np.empty((matrixB.shape[1]))
     print("Aux: ",len(aux))
-    for i in range(matrixB.shape[1]):
+    for i in range(matrixB.shape[0]):
         if(turn==True):
             for k in range(matrixB.shape[1]):
                 aux[k]=matrixB[i][k]
@@ -83,7 +83,7 @@ def fase(numFase,dataDesf):
     
 def acoplar(numAcoplo,matrixBG):
     acoplo=True
-    for i in range(matrixBG.shape[1]):
+    for i in range(matrixBG.shape[0]):
         if(acoplo==True):
             matrixBG[i,:]=fase(numAcoplo,matrixBG[i,:])
         acoplo=not(acoplo)
