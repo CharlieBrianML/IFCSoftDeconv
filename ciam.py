@@ -24,16 +24,22 @@ def normalizar(data):
     for p in range(len(data)):
         data[p]=(data[p]*256)/4.6  #Formula para normalizar los valores de [0, 255]
 
-def promediar(data,dim):
-    dataP = np.empty((dim, dim))
-    for i in range(0):
-    
+def promediar(dataF):
+    j=0
+    dataP = np.empty(int((len(dataF))/4))
+    for i in range(0,(len(dataF)),4):
+        dataP[j]=dataF[i]+dataF[i+1]+dataF[i+2]+dataF[i+3]
+        j+=1;
+    return dataP
 
 #Transformacion del arreglo unidimensional a bidimencional
-def transformarR1R2(data):
-    dim=int(math.sqrt(len(data)))
-    matrixB = np.empty((dim, dim))
-    matrixB=np.reshape(data,(-1,dim))
+def transformarR1R2(data,fil,col):
+    #dim=int(math.sqrt(len(data)))
+    #matrixB = np.empty((fil, col))
+    #print("Dim de la matrixB: ",matrixB.shape)
+    matrixB=np.reshape(data,(fil,col))
+    print("Len matrixB: ",len(matrixB))
+    print("Dim de la matrixBNueva: ",matrixB.shape)
     return matrixB
 
 #Transformacion del arreglo bidimensional a tridimencional    
@@ -47,16 +53,17 @@ def transformarR2R3(matrixB):
 
 #Código para girar las filas impares
 def girar(matrixB):
-	turn=False
-	aux = np.empty((matrixB.shape[1]))
-	for i in range(matrixB.shape[1]):
-		if(turn==True):
-			for k in range(matrixB.shape[1]):
-				aux[k]=matrixB[i][k]
-			for l in range(matrixB.shape[1]):
-				matrixB[i][l]=aux[-(l+1)]
-		turn=not(turn)
-	return matrixB
+    turn=False
+    aux = np.empty((matrixB.shape[1]))
+    print("Aux: ",len(aux))
+    for i in range(matrixB.shape[1]):
+        if(turn==True):
+            for k in range(matrixB.shape[1]):
+                aux[k]=matrixB[i][k]
+            for l in range(matrixB.shape[1]):
+                matrixB[i][l]=aux[-(l+1)]
+        turn=not(turn)
+    return matrixB
     
 #Código para ajutar la fase de las filas 
 def right(dataDesf,numElm):
@@ -118,8 +125,9 @@ def elegirCanal(canal,matrixT):
     
 def construirImagen(data,canal,desp):
     normalizar(data)
-    matrixB=transformarR1R2(data) #Covension R1 --> R2
-    matrixBG=girar(matrixB)
+    print("Data nueva: ",len(data))
+    matrixB=transformarR1R2(data,512,600) #Covension R1 --> R2
+    matrixBG=girar(matrixB)                                                 
     matrixCouple=acoplar(int(desp),matrixBG)
     matrixR=recortar(matrixCouple,int(desp))
     matrixT=transformarR2R3(matrixCouple) #Covension R2 --> R3
@@ -128,18 +136,19 @@ def construirImagen(data,canal,desp):
 
 def main(params):
     numParams=len(sys.argv)
-    for i in range(numParams):
-        action=params[i]
-        if(numParams==1):
-            print("Archivo de lectura no especificado")
-        if(numParams==2):
-            data=leerArchivo(params[1])
-            construirImagen(data,"RGB",0)
-        if(numParams==3):
-            data=leerArchivo(params[1])
-            construirImagen(data,params[2],0)
-        if(numParams==4):
-            data=leerArchivo(params[1])
-            construirImagen(data,params[2],params[3])
+    if(numParams==1):
+        print("Archivo de lectura no especificado")
+    if(numParams==2):
+        data=leerArchivo(params[1])
+        dataP=promediar(data)
+        construirImagen(dataP,"RGB",0)
+    if(numParams==3):
+        data=leerArchivo(params[1])
+        dataP=promediar(data)
+        construirImagen(dataP,params[2],0)
+    if(numParams==4):
+        data=leerArchivo(params[1])
+        dataP=promediar(data)
+        construirImagen(dataP,params[2],params[3])
                 
 main(sys.argv)

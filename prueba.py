@@ -3,10 +3,18 @@ data = np.array([[1,2,3,4,5,6],[7,8,9,10,11,12],[13,14,15,16,17,18],[13,14,15,16
 data2 = np.array([1,2,3,4,5,6,7,8,9])
 #print(data2)
 
-binaryFile = open("imagen2.dat", mode='rb')#Abrimos el archivo en modo binario
-dataa = np.fromfile(binaryFile, dtype='d') # reads the whole file
-print("Longitud: ",len(dataa))
-print("Dimension: ",data.shape[1])
+binaryFile = open("imagen4.dat", mode='rb')#Abrimos el archivo en modo binario
+dataF = np.fromfile(binaryFile, dtype='d') # reads the whole file
+print("Longitud: ",len(dataF))
+#print("Dimension: ",data.shape[1])
+
+def promediar(dataF):
+    j=0
+    dataP = np.empty(int((len(dataF))/4))
+    for i in range(0,(len(dataF)),4):
+        dataP[j]=dataF[i]+dataF[i+1]+dataF[i+2]+dataF[i+3]
+        j+=1;
+    return dataP
 
 def girar(data):
 	turn=False
@@ -59,5 +67,6 @@ def recortar(data,numRecorte):
     return matrixR
     
 #dataCouple=acoplar(2,data)
-dataElim=recortar(data,2)
-print(dataElim)
+#dataElim=recortar(data,2)
+dataP=promediar(dataF)
+print(len(dataP))
