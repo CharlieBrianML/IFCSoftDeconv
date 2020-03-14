@@ -3,7 +3,6 @@ import math
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
-from PIL import Image
 
 #Funcion para leer el archivo .dat
 def leerArchivo(nombre):
@@ -101,36 +100,9 @@ def acoplar(numAcoplo,matrixBG):
 #Codigo para crear la imagen a partir de una matriz R3
 def crearImagen(imagen):
     cv2.imwrite("MyImage.png",imagen)
-    #plt.imshow(imagen)
-    #plt.show()
     """cv2.imshow("Imagen",imagen)
     cv2.waitKey(0)
     cv2.destroyAllWindows()"""
-    
-def crearImagenPil(data):
-    a = []
-    r = 0
-    g = 255
-    b = 0
-
-    for i in range(600*512):
-        colorTuple = (r, int(data[i]), b)
-        a.append(colorTuple)
-
-    newimage = Image.new('RGB', (600, 512))
-    newimage.putdata(a)
-    newimage.show()
-
-def crearImagenPlot(data):
-    max=maxValor(data)
-    dataAux = np.empty(len(data))
-    for p in range(len(data)):
-        dataAux[p]=(data[p]*1)/max
-    matrixB=transformarR1R2(dataAux,512,600)
-    matrixT=transformarR2R3(matrixB)
-    imagen=elegirCanal("G",matrixT)
-    plt.imshow(imagen)
-    plt.show()
 
     
 #Codigo para recortar la imagen, quitamos elementos la matriz
@@ -159,15 +131,15 @@ def elegirCanal(canal,matrixT):
     imagen=matrixT
     return imagen
     
-def construirImagen(data,canal,desp):
-    crearImagenPlot(data)
+def construirImagen(data,canal,desp,fil,col):
+    #crearImagenPlot(data)
     normalizar(data)
-    crearImagenPil(data)
+    #crearImagenPil(data)
     #print("Data nueva: ",len(data))
-    print("Maximo valor: ",maxValor(data))
+    #print("Maximo valor: ",maxValor(data))
     #graficar(data)
-    print("data normalizado:",data)
-    matrixB=transformarR1R2(data,512,600) #Covension R1 --> R2
+    #print("data normalizado:",data)
+    matrixB=transformarR1R2(data,fil,col) #Covension R1 --> R2
     print("MatrixB: ",matrixB)
     matrixBG=girar(matrixB)
     print("MatrixBG: ",matrixBG)
@@ -180,30 +152,37 @@ def construirImagen(data,canal,desp):
     crearImagen(imagen)
 
 def main(params):
-    numParams=len(sys.argv)
-    if(numParams==1):
-        print("Archivo de lectura no especificado")
-    if(numParams==2):
-        data=leerArchivo(params[1])
-        #dataP=promediar(data)
-        construirImagen(data,"RGB",0)
-    if(numParams==3):
-        data=leerArchivo(params[1])
-        #graficar(data)
-        print("Maximo valor: ",maxValor(data))
-        if(params[2]=="-g"):
-            graficar(data)
-        else:
-            #dataP=promediar(data)
-            construirImagen(data,params[2],0)
-    if(numParams==4):
-        data=leerArchivo(params[1])
-        #dataP=promediar(data)
-        construirImagen(data,params[2],params[3])
-    if(numParams==5):
-        data=leerArchivo(params[1])
-        if(params[2]=="-p"):
-            dataP=promediar(data)
-            construirImagen(dataP,params[4],params[5])
+	numParams=len(sys.argv)
+	if(numParams<4):
+		print("Parametros especificados invalidos")
+	else:
+		data=leerArchivo(params[1])
+		if(numParams==4):
+			print("Me meto a 4")
+			construirImagen(data,"RGB",0,int(params[2]),int(params[3]))
+		if(numParams==5):
+			print("Me meto a 5")
+			if(params[4]=="-g"):
+				graficar(data)
+			if(params[4]=="-p"):
+				dataP=promediar(data)
+				construirImagen(dataP,"RGB",0,int(params[2]),int(params[3]))
+			if(params[4]!="-p" and params[4]!="-g"):
+				construirImagen(data,params[4],0,int(params[2]),int(params[3]))
+		if(numParams==6):
+			print("Me meto a 6")
+			if(params[4]=="-p"):
+				dataP=promediar(data)
+				if(params[5]=="-g"):
+					graficar(dataP)
+				else:
+					construirImagen(dataP,params[5],0,int(params[2]),int(params[3]))
+			else:
+				construirImagen(data,params[4],params[5],int(params[2]),int(params[3]))
+		if(numParams==7):
+			print("Me meto a 7")
+			data=leerArchivo(params[1])
+			dataP=promediar(data)
+			construirImagen(dataP,params[5],params[6],int(params[2]),int(params[3]))
                 
 main(sys.argv)
