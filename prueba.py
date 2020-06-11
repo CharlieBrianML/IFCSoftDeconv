@@ -9,6 +9,31 @@ dataF = np.fromfile(binaryFile, dtype='d') # reads the whole file
 print("Longitud: ",len(dataF))
 #print("Dimension: ",data.shape[1])
 
+def crearImagenPil(data):
+    a = []
+    r = 0
+    g = 255
+    b = 0
+
+    for i in range(600*512):
+        colorTuple = (r, int(data[i]), b)
+        a.append(colorTuple)
+
+    newimage = Image.new('RGB', (600, 512))
+    newimage.putdata(a)
+    newimage.show()
+	
+def crearImagenPlot(data):
+    max=maxValor(data)
+    dataAux = np.empty(len(data))
+    for p in range(len(data)):
+        dataAux[p]=(data[p]*1)/max
+    matrixB=transformarR1R2(dataAux,512,600)
+    matrixT=transformarR2R3(matrixB)
+    imagen=elegirCanal("G",matrixT)
+    plt.imshow(imagen)
+    plt.show()
+
 def promediar(dataF):
     j=0
     dataP = np.empty(int((len(dataF))/4))
