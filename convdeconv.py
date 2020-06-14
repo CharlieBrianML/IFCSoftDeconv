@@ -4,7 +4,7 @@ import argparse
 import cv2
 import matplotlib.pyplot as plt
 
-def convolve(image, kernel):
+def convolvek(image, kernel):
 
 	(iH, iW) = image.shape[:2]
 	(kH, kW) = kernel.shape[:2]
@@ -23,11 +23,10 @@ def convolve(image, kernel):
 	output = (output * 255).astype("uint8")
 	#output = output.astype(int)
 
-	# return the output image
 	return output
 	
 	
-def deconvolve2(image, kernel):
+def deconvolveK(image, kernel):
 
 	(iH, iW) = image.shape[:2]
 	(kH, kW) = kernel.shape[:2]
@@ -46,36 +45,36 @@ def deconvolve2(image, kernel):
 	output = (output * 255).astype("uint8")
 	#output = output.astype(int)
 
-	# return the output image
 	return output
 	
 def convolveF(img, psf):
 	
 	(iH, iW) = img.shape[:2]
-	(kH, kW) = psf.shape[:2]
-	imgF = np.zeros((iH, iW), dtype='complex')
+	#convF = np.zeros((iH, iW), dtype='complex')
 	
-	imgF=np.fft.fft(img)
-	psfF=np.fft.fft(psf)
-	conv=imgF*psfF
-	print("conv: \n",img,"\nLen: ", img.shape)
-	return conv	
+	imgF=np.fft.fft(img) #Transformada de Fourier de la imagen
+	psfF=np.fft.fft(psf) #Transformada de Fourier de la psf
+	#print("imgF: ",imgF[0][:])
+	#print("psfF: ",psfF[0][:])
+	convF=imgF*psfF #Convolucion en el espacio de Fourier
+	print("convF: \n",convF,"\nLen: ", convF.shape)
+	return convF	
 	
 def deconvolveF(convF, psf):
 	
-	(iH, iW) = convF.shape[:2]
-	(kH, kW) = psf.shape[:2]
+	(iH, iW) = convF.shape[:2] #Se obtiene las dimensiones de la matriz de convolucion
 	imgF = np.zeros((iH, iW), dtype='complex')
 	
-	#convF=np.fft.fft(conv)
-	psfF=np.fft.fft(psf)
-	#psfFP=psfF.sum()
+	psfF=np.fft.fft(psf) #Se obtiene la transformada de Fourier
 	for i in range(iH):
 		for j in range(iW):
-			imgF[i][j]=convF[i][j]/psfF[i][j]
+			imgF[i][j]=convF[i][j]/psfF[i][j] #Se hace la division punto a punto con la psf
+			#if(np.abs(psf[i][j])==0.0):
+			#	imgF[i][j]=0.0+0.0j
+			#else:
+			#	imgF[i][j]=convF[i][j]/psfF[i][j] #Se hace la division punto a punto con la psf
 	print("imgF: \n",imgF)
-	#img=np.abs(imgF)
-	img=np.abs(np.fft.ifft(imgF))
+	img=np.abs(np.fft.ifft(imgF)) #Se realiza la transformada invesa de Fourier
 	print("img: \n",img,"\nLen: ", img.shape)
 	return img
 
@@ -117,13 +116,9 @@ miKernel = np.array((
     [2, 4, 1],
     [4, 3, 5],
     [1, 2, 3]), dtype="int")
-	
-miKernelInv = np.array((
-    [1/25, 2/5, -17/25],
-    [7/25, -1/5, 6/25],
-    [-1/5, 0, 2/5]), dtype="float")
 
-def prueba1():
+
+def deconvolveFourier():
 	image = cv2.imread(args["image"])
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 	print("Imagen: \n",gray)
@@ -132,63 +127,43 @@ def prueba1():
 	psf = cv2.cvtColor(psf, cv2.COLOR_BGR2GRAY)
 	print("PSF: \n",psf)
 
-	#opencvOutput = cv2.filter2D(gray, -1, smallBlur)
-	#convolveOutput = convolve(gray, miKernel)
-	#laplacianOutput = convolve(gray, laplacian)
-	miconv = convolveF(gray, 0.00009*psf)
-	print("Convolucion: \n",miconv)
-	#output = rescale_intensity(miconv, in_range=(0, 255))
-	#output = (output * 255).astype("uint8")
+	miconv = convolveF(gray, psf)
+	print("abs(miconv): \n",np.abs(miconv),"\nLen: ", (np.abs(miconv)).shape)
+	outconv = rescale_intensity(np.abs(miconv), in_range=(0, 255))
+	outconv = (outconv * 255).astype("uint8")
 
-	#print("Determinante: ",np.linalg.det(miKernel))
-	#miKernelInv=np.linalg.inv(miKernel)
-	#print("Kernel Inverso: \n", miKernelInv)
 	mideconv = deconvolveF(miconv, psf)
-	#print("Deconvolucion: \n",mideconv)
+	outdeconv = rescale_intensity(np.abs(mideconv), in_range=(0, 255))
+	outdeconv = (outdeconv * 255).astype("uint8")
 
 	cv2.imshow("original", gray)
-	#cv2.imshow("OpenCVFilter", opencvOutput)
-	#cv2.imshow("smallBlur", convolveOutput)
-	#cv2.imshow("laplacian", laplacianOutput)
-	cv2.imshow("Convolucion", np.abs(miconv))
+	cv2.imshow("Convolucion", outconv)
 	#cv2.imwrite("ImgConv.png",miconv)
-	cv2.imshow("Deconvolucion", 20*mideconv)
+	cv2.imshow("Deconvolucion", outdeconv)
 
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()
 	
-def prueba2():
+def deconvolveKernel():
 	image = cv2.imread(args["image"])
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 	print("Imagen: \n",gray)
 
-	#psf = cv2.imread('PSF2.png')
-	#psf = cv2.cvtColor(psf, cv2.COLOR_BGR2GRAY)
-	#print(psf)
-
-	#opencvOutput = cv2.filter2D(gray, -1, smallBlur)
-	#convolveOutput = convolve(gray, miKernel)
-	#laplacianOutput = convolve(gray, laplacian)
-	miconv = convolve(gray, 0.05*miKernel)
+	miconv = convolveK(gray, 0.05*miKernel)
 	print("Convolucion: \n",miconv)
-	#output = rescale_intensity(miconv, in_range=(0, 255))
-	#output = (output * 255).astype("uint8")
 
 	#print("Determinante: ",np.linalg.det(miKernel))
 	#miKernelInv=np.linalg.inv(miKernel)
 	#print("Kernel Inverso: \n", miKernelInv)
-	mideconv = deconvolve2(miconv, (np.linalg.inv(miKernel)))
-	#print("Deconvolucion: \n",mideconv)
+	mideconv = deconvolveK(miconv, (np.linalg.inv(miKernel)))
+	print("Deconvolucion: \n",mideconv)
 
 	cv2.imshow("original", gray)
-	#cv2.imshow("OpenCVFilter", opencvOutput)
-	#cv2.imshow("smallBlur", convolveOutput)
-	#cv2.imshow("laplacian", laplacianOutput)
 	cv2.imshow("Deconvolucion", miconv)
 	cv2.imshow("Convolucion", 20*mideconv)
 
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()
 	
-prueba1()
-#prueba2()
+deconvolveFourier()
+#deconvolveKernel()
