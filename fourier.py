@@ -48,4 +48,5 @@ def pulsoRec():
 	
 	plt.show()
 
-pulsoRec()
+#pulsoRec()
+senoidal()
