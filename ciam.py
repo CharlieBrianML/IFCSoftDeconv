@@ -132,24 +132,25 @@ def elegirCanal(canal,matrixT):
     return imagen
     
 def construirImagen(data,canal,desp,fil,col):
-    #crearImagenPlot(data)
-    normalizar(data)
-    #crearImagenPil(data)
-    #print("Data nueva: ",len(data))
-    #print("Maximo valor: ",maxValor(data))
-    #graficar(data)
-    #print("data normalizado:",data)
-    matrixB=transformarR1R2(data,fil,col) #Covension R1 --> R2
-    print("MatrixB: ",matrixB)
-    matrixBG=girar(matrixB)
-    print("MatrixBG: ",matrixBG)
-    matrixCouple=acoplar(int(desp),matrixBG)
-    matrixR=recortar(matrixCouple,int(44))
-    print("La matriz recortada: ",matrixR.shape)
-    matrixT=transformarR2R3(matrixR) #Covension R2 --> R3
-    print("MatrixT: ",matrixT[:,:,2])
-    imagen=elegirCanal(canal,matrixT)
-    crearImagen(imagen)
+	#crearImagenPlot(data)
+	normalizar(data)
+	#crearImagenPil(data)
+	#print("Data nueva: ",len(data))
+	#print("Maximo valor: ",maxValor(data))
+	#graficar(data)
+	#print("data normalizado:",data)
+	matrixB=transformarR1R2(data,fil,col) #Covension R1 --> R2
+	print("MatrixB: ",matrixB)
+	matrixBG=girar(matrixB)
+	print("MatrixBG: ",matrixBG)
+	matrixCouple=acoplar(int(desp),matrixBG)
+	#matrixR=recortar(matrixCouple,int(44))
+	matrixR=matrixCouple
+	print("La matriz recortada: ",matrixR.shape)
+	matrixT=transformarR2R3(matrixR) #Covension R2 --> R3
+	print("MatrixT: ",matrixT[:,:,2])
+	imagen=elegirCanal(canal,matrixT)
+	crearImagen(imagen)
 
 def main(params):
 	numParams=len(sys.argv)

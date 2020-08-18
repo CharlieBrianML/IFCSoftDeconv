@@ -1,0 +1,73 @@
+run pip install opencv-python
+run pip install opencv-contrib-python
+run pip install opencv-python-headless
+run pip install opencv-contrib-python-headless
+pip install scipy
+
+pip3 install numpy or apt-get install python3-numpy. You may need to apt-get install python3-pip.
+
+pip3 install matplotlib or apt-get install python3-matplotlib.
+
+apt-get install python3-OpenCV
+
+Desinstalar OpenCV
+sudo apt-get purge libopencv*
+sudo dpkg -r opencv
+
+Cheque
+sudo dpkg -r opencv
+
+Luego, vaya al directorio de compilación y
+sudo make uninstall
+
+Después, puede reconstruir con este comando make
+cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX=/usr/local -DFORCE_VTK=ON -DWITH_TBB=ON -DWITH_V4L=ON -DWITH_QT=ON -DWITH_OPENGL=ON -DWITH_CUBLAS=ON -DCUDA_NVCC_FLAGS="-D_FORCE_INLINES" -DWITH_GDAL=ON -DWITH_XINE=ON -DBUILD_EXAMPLES=ON ..
+
+Y luego, finalmente
+sudo make install
+
+imagen_blanca = np.ones((255,255,3), dtype = np.uint8)
+imagen_negra = np.zeros((255,255))
+print(imagen_blanca)
+for n in range(255):
+    for p in range(255):
+        imagen_blanca[n][p][2]=255
+
+*Crear una matriz
+>>> X = np.arange(24).reshape(2, 3, 4)
+>>> X
+array([[[ 0,  1,  2,  3],
+        [ 4,  5,  6,  7],
+        [ 8,  9, 10, 11]],
+
+       [[12, 13, 14, 15],
+        [16, 17, 18, 19],
+        [20, 21, 22, 23]]])
+
+*Tipo de dato
+>>> type("hola mundo")
+<type 'str'>
+>>> type(6)
+<type 'int'>
+
+*Dimension de una matriz
+>>> a.shape
+(2, 2)
+
+*Numero de dimensiones
+>>> X.ndim
+3
+>>> np.rank(X)
+3
+
+*Ver los ejes
+>>> X.sum(axis=0)
+array([[12, 14, 16, 18],
+       [20, 22, 24, 26],
+       [28, 30, 32, 34]])
+>>> X.sum(axis=1)
+array([[12, 15, 18, 21],
+       [48, 51, 54, 57]])
+>>> X.sum(axis=2)
+array([[ 6, 22, 38],
+       [54, 70, 86]])
