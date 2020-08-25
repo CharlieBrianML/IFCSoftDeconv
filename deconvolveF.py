@@ -1,7 +1,3 @@
-#[Fourier Transform - OpenCV-Python Tutorials 1 documentation](https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_imgproc/py_transforms/py_fourier_transform/py_fourier_transform.html)
-#python
-# This code runs with the 3.8.2 python version
-# also the code needs the activation of tensorflowEnv in python Env
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,12 +6,13 @@ from scipy import ndimage, signal
 from flowdec import data as fd_data
 from flowdec import restoration as fd_restoration
 from skimage.exposure import rescale_intensity
-
 import cv2
 
 # ===> Loading data
 data = plt.imread('Images/verdeactrojomiosinaazulsinapto20Hz1.png')   # image for deconvolution
-img = cv2.imread('Images/verdeactrojomiosinaazulsinapto20Hz1.png', 0) # image for fft
+img = cv2.imread('Deconvolutions/Deconvolve_verdeactro.png', 0) # image for fft
+img2 = cv2.imread('Deconvolutions/Deconvolve_verdeactro2.png', 0) # image for fft
+img3 = cv2.imread('Deconvolutions/Deconvolve_verdeactro3.png', 0) # image for fft
 imgdeconv = cv2.imread('Deconvolutions/Deconvolve_verdeactro.png')
 #plt.plot(np.arange(800*800),np.reshape(img,800*800),'o')
 #plt.show()
@@ -41,19 +38,23 @@ res = algo.run(fd_data.Acquisition(data=data, kernel=kernel), niter=iteration).d
 f = np.fft.fft2(img)
 fdeconv = np.fft.fft2(imgdeconv[:,:,1])
 k = np.fft.fft2(kernel[:,:,0])
+im1 = np.fft.fft2(img)
+im2 = np.fft.fft2(img2)
+im3 = np.fft.fft2(img3)
 freq=np.fft.fftfreq(800*800, d=1.0)
 
 plt.figure(1)
 #plt.plot(np.arange(800*800),np.reshape(np.abs(f),800*800),'o')
-plt.vlines(freq,0,np.reshape(np.abs(f),800*800))
-plt.title('Transformada Fourier ImagenConvolucion')
+plt.vlines(freq,0,np.reshape(np.abs(im1),800*800))
+plt.title('Espectro Deconvolution 1')
 plt.figure(2)
 #plt.plot(freq,np.reshape(np.abs(fdeconv),800*800),'o')
-plt.vlines(freq,0,np.reshape(np.abs(fdeconv),800*800))
-plt.title('Transformada Fourier ImagenDeconvolucion')
+plt.vlines(freq,0,np.reshape(np.abs(im2),800*800))
+plt.title('Espectro Deconvolution 2')
 plt.figure(3)
 #plt.plot(np.arange(800*800),np.reshape(np.abs(k),800*800),'o')
-plt.vlines(freq,0,np.reshape(np.abs(k),800*800))
+plt.vlines(freq,0,np.reshape(np.abs(im3),800*800))
+plt.title('Espectro Deconvolution 3')
 #plt.show()
 
 '''
