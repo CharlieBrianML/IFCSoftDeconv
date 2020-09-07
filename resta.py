@@ -8,12 +8,96 @@ from flowdec import restoration as fd_restoration
 from skimage.exposure import rescale_intensity
 import cv2
 
+def normalizar(data):
+	max=np.amax(data)#Se calcula el valor maximo del vector
+	for p in range(data.shape[0]):
+		for m in range(data.shape[1]):
+			data[p][m]=(data[p][m]*256)/max  #Formula para normalizar los valores de [0, 255]
+	return data
+
 # ===> Loading data
-img = cv2.imread('Deconvolutions/Deconvolve_verdeactro3.png',0)
-img2 = cv2.imread('Deconvolutions/Deconvolve_verdeactro.png',0)
+img = cv2.imread('Deconvolutions/Deconvolve_310114_1hzC1.bmp')
+img2 = cv2.imread('Deconvolutions/Deconvolve_310114_1hzC2.bmp')
+img3 = cv2.imread('Deconvolutions/Deconvolve_310114_1hzC3.bmp')
 #cv2.imwrite("Deconvolutions/Deconvolve_verdeactro.jpg",img)
 
+img4=img
+print('Primero\n',img4)
+#img4[:,:,0]=img[:,:,1]
+img4[:,:,1]=img2[:,:,1]
+print('Segundo\n', img4)
+img4[:,:,2]=img3[:,:,2]
+print('Tercero\n',img4)
+#outimg4 = rescale_intensity(img4, in_range=(0, 255))
+#outimg4 = (outimg4 * 255).astype("uint8")
+#cv2.imwrite("Deconvolutions/Deconvolve_310114_1hzC4.bmp",img4)
+outimg4 = img4
+outimg4[:,:,0] = normalizar(img4[:,:,0])
+outimg4[:,:,1] = normalizar(img4[:,:,1])
+outimg4[:,:,2] = normalizar(img4[:,:,2])
+cv2.imshow("img4", outimg4)
+#cv2.imwrite("Deconvolutions/Deconvolve_310114_1hzNC4.bmp",img4)
+'''
+for i in range(1024):
+	for j in range(1024):
+		img4[i][j][1]=img2[i][j][1]
+		
+for k in range(1024):
+	for l in range(1024):
+		img4[k][l][2]=img2[k][l][2]
+'''
+img[:,:,0]=0
+img[:,:,2]=0
 
+img2[:,:,0]=0
+img2[:,:,1]=0
+
+img3[:,:,1]=0
+img3[:,:,2]=0
+
+print(img4[:,:,0],'\n')
+print(img4[:,:,1],'\n')
+print(img4[:,:,2],'\n')
+print(img4)
+
+#cv2.imwrite("Deconvolutions/Deconvolve_310114_1hz.bmp",img)
+#outimg = rescale_intensity(img, in_range=(0, 255))
+#outimg = (outimg * 255).astype("uint8")
+outimg = img
+#cv2.imwrite("Deconvolutions/Deconvolve_310114_1hzC1.bmp",img)
+
+outimg[:,:,1] = normalizar(img[:,:,1])
+cv2.imshow("img", outimg)
+cv2.imwrite("Deconvolutions/Deconvolve_310114_1hzNC1.bmp",outimg)
+
+#cv2.imwrite("Deconvolutions/Deconvolve_310114_1hz2.bmp",img2)
+#outimg2 = rescale_intensity(img2, in_range=(0, 255))
+#outimg2 = (outimg2 * 255).astype("uint8")
+outimg2 = img2
+#cv2.imwrite("Deconvolutions/Deconvolve_310114_1hzC2.bmp",img2)
+
+outimg2[:,:,2] = normalizar(img2[:,:,2])
+cv2.imshow("img2", outimg2)
+cv2.imwrite("Deconvolutions/Deconvolve_310114_1hzNC2.bmp",outimg2)
+
+#cv2.imwrite("Deconvolutions/Deconvolve_310114_1hz3.bmp",img3)
+#outimg3 = rescale_intensity(img3, in_range=(0, 255))
+#outimg3 = (outimg3 * 255).astype("uint8")
+outimg3 = img3
+#cv2.imwrite("Deconvolutions/Deconvolve_310114_1hzC3.bmp",img3)
+
+outimg3[:,:,0] = normalizar(img3[:,:,0])
+cv2.imshow("img3", outimg3)
+cv2.imwrite("Deconvolutions/Deconvolve_310114_1hzNC3.bmp",outimg3)
+
+#cv2.imwrite("Deconvolutions/Deconvolve_310114_1hz4.bmp",img4)
+#outimg4 = rescale_intensity(img4, in_range=(0, 255))
+#outimg4 = (outimg4 * 255).astype("uint8")
+#cv2.imshow("img4", img4)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+'''
 #Funcion para normalizar los valores
 def normalizar(image):
 #max=maxValor(data)#Se calcula el valor maximo del vector
@@ -24,7 +108,7 @@ def normalizar(image):
 		for j in range(800):
 			data[i][j]=(image[i][j]*256)/maxi  #Formula para normalizar los valores de [0, 255]
 	return data
-
+'''
 '''
 resta= np.arange(800*800).reshape((800,800))
 for i in range(800):
@@ -117,13 +201,13 @@ magnitude_spectrum_data = 20*np.log(np.abs(fshift))
 
 #img2R = rescale_intensity(img2, in_range=(0, 255))
 #img2R = (img2R * 255).astype("uint8")
-
+'''
 imgR=normalizar(img)
 img2R=normalizar(img2)
 print(img2R)
 plt.imshow(imgR, cmap='gray')
 plt.show()
-
+'''
 '''cv2.imshow("Convolucion", imgR)
 cv2.imshow("Deconvolution", img2R)
 
