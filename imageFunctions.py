@@ -1,4 +1,6 @@
 from skimage.exposure import rescale_intensity
+import numpy as np
+import cv2
 
 
 def normalizar(data):
@@ -13,3 +15,18 @@ def rescaleSkimage(img):
 	imgRescale = rescale_intensity(img, in_range=(0, 255))
 	imgRescale = (imgRescale * 255).astype("uint8")
 	return imgRescale
+
+def mostrarImagen(nameFile, img, close):
+	cv2.imshow(nameFile, img)
+	if (close):
+		cv2.waitKey(0)
+		cv2.destroyAllWindows()
+	
+def guardarImagen(nameFile, img):
+	cv2.imwrite(nameFile, img)
+	
+def imgReadCv2(nameImg,channel):
+	return cv2.imread(nameImg,channel)
+	
+#def imgReadCv2(nameImg):
+#	cv2.imread(nameImg)
