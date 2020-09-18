@@ -4,6 +4,7 @@ import numpy as np
 import argparse
 import cv2  # if not installed -> sudo apt install python3-opencv
 import matplotlib.pyplot as plt
+from imageFunctions import normalizar
 
 def convolve(image, kernel):
     # grab the spatial dimensions of the image, along with the spatial
@@ -44,13 +45,14 @@ def convolve(image, kernel):
 
 	# rescale the output image to be in the range [0, 255]
 	print(output)
-	output = rescale_intensity(output, in_range=(0, 255))
-	output = (output * 255).astype("uint8")
-	print("En entero: \n",output)
+	#output2 = rescale_intensity(output, in_range=(0, 255))
+	#output2 = (output2 * 255).astype("uint8")
+	#print("En entero: \n",output)
+	output = normalizar(output)
 
 	# return the output image
 	return output
-
+'''
 # Construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--image", required=True, help="path to the input image")
@@ -59,7 +61,7 @@ args = vars(ap.parse_args())
 # Construct average blurring kernels used to smooth the image
 smallBlur = np.ones((7, 7), dtype="float") * (1.0 / (7 * 7))
 largeBlur = np.ones((21, 21), dtype="float") * (1.0 / (21 * 21))
-
+'''
 # construct the sharpening filter
 sharpen = np.array((
     [0, -1, 0],
@@ -83,7 +85,7 @@ sobel1Y = np.array((
     [-1, -2, -1],
     [0, 0, 0],
     [1, 2, 1]), dtype="int")
-
+'''
 # load the input image and convert it to grayscale
 #print("El argumento es: ",args["image"])
 image = cv2.imread(args["image"])
@@ -92,11 +94,17 @@ gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 opencvOutput = cv2.filter2D(gray, -1, smallBlur)
 convolveOutput = convolve(gray, smallBlur)
 laplacianOutput = convolve(gray, laplacian)
-
-cv2.imshow("original", gray)
-cv2.imshow("OpenCVFilter", opencvOutput)
-cv2.imshow("smallBlur", convolveOutput)
-cv2.imshow("laplacian", laplacianOutput)
+'''
+#img=cv2.imread('Images/Figuras.bmp',0)
+img=cv2.imread('Images/ImgConv.png',0)
+kernel=cv2.imread('PSF/PSF_BW8.bmp',0)
+conv=convolve(img,sobel1X)
+cv2.imshow("original", img)
+cv2.imshow("Convolucion", conv)
+#cv2.imshow("original", gray)
+#cv2.imshow("OpenCVFilter", opencvOutput)
+#cv2.imshow("smallBlur", convolveOutput)
+#cv2.imshow("laplacian", laplacianOutput)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()

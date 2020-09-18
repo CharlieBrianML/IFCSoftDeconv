@@ -1,25 +1,21 @@
 from time import time
-from imageFunctions import mostrarImagen
-from imageFunctions import normalizar
-from imageFunctions import imgReadCv2
-from imageFunctions import guardarImagen
-from imageFunctions import elegirCanal
+import imageFunctions as imf
 from deconvTF import deconvolveTF
 
 to=time()
 
-img = imgReadCv2('Images/310114 1hz-23_C003Z001.bmp',2)
-psf = imgReadCv2('PSF/PSF_BW6.bmp',2)
+img = imf.imgReadCv2('Images/310114 1hz-23_C003Z001.bmp',0) #Leemos la imagen a procesar 
+psf = imf.imgReadCv2('PSF/PSF_BW8.bmp',0) #Leemos la psf de la imagen
 
-deconv = deconvolveTF(img, psf,10)
+deconv = deconvolveTF(img, psf,40) #Funcion de deconvolucion de imagenes
 
 #mostrarImagen("Convolve",img,False)
-deconvN = normalizar(deconv)
-deconvNR = elegirCanal("B",deconvN)
-mostrarImagen("Deconvolucion",deconvNR,True)
+deconvN = imf.normalizar(deconv) #Se normaliza la matriz 
+deconvNR = imf.elegirCanal("R",deconvN) #Se eligue un canal RGB
+imf.mostrarImagen("Deconvolucion",deconvNR,True)
 
-#guardarImagen("Deconvolutions/Deconvolve_310114_1hzC3.bmp",outdeconv)
-#guardarImagen("Deconvolve_310114_1hzC3.bmp",deconvN)
+imf.guardarImagen("Deconvolutions/Deconvolve_310114_1hz_Blue40Iterations.bmp",deconvNR) #Guardamos el resultado en memoria
+#imf.guardarImagen("C:/Users/charl/Desktop/Deconvolve_310114_1hz_10Iterations.bmp",deconvN)
 
 tf=time()
 tt=tf-to
