@@ -3,6 +3,7 @@ import tifffile
 import numpy as np
 from skimage import io
 
+#Funcion que lee un archivo .tif
 def leerTiff(fileTiff):
 	img = io.imread(fileTiff) #Lee el archivo .tif
 	frames = [] #Lista que contendrá los frames del .tif
@@ -11,9 +12,11 @@ def leerTiff(fileTiff):
 		frames.append(img[i,:,:,:])
 	return frames #Se retorna una lista con los frames separados
 	
+#Funcion que convierte una matriz multidimensional a un archivo .tif
 def imgtoTiff(imgs,savepath):
-	tifffile.imsave(savepath,imgs) #Funcion que convierte una matriz multidimensional a un archivo .tif
+	tifffile.imsave(savepath,imgs) #[[[]]] -> .tif
 
+#Funcion que convierte imagenes a matrices multidimensionales
 def imgtoMatrix(img_list):
 	cnt_num = 0
 	for img in img_list: #Estraemos cada imagen de la lista
@@ -26,6 +29,6 @@ def imgtoMatrix(img_list):
 		cnt_num += 1
 	return tiff_list
 
-imgs=leerTiff('Deconvolutions/Stack.tif')
-imgsM=imgtoMatrix(imgs)
-imgtoTiff(imgsM,'C:/Users/charl/Desktop/hola.tif')
+#imgs=leerTiff('Deconvolutions/Stack.tif')
+#imgsM=imgtoMatrix(imgs)
+#imgtoTiff(imgsM,'C:/Users/charl/Desktop/hola.tif')
