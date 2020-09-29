@@ -1,6 +1,7 @@
 from time import time
 import imageFunctions as imf
 from deconvTF import deconvolveTF
+from getpass import getuser
 import tiff as tif
 import os
 import sys
@@ -44,7 +45,8 @@ to=time()
 imgpath, psfpath, i = sys.argv[1:4]
 nameFile, extention = os.path.splitext(imgpath)
 nameFile = nameFile.split('/')[len(nameFile.split('/'))-1]
-path = "C:/Users/charl/Desktop"
+dir_path = os.path.dirname(os.path.realpath(sys.argv[0])) 
+path = "C:/Users/"+getuser()+"/Desktop"
 
 if(extention=='.tif'):
 	imgs = tif.leerTiff(imgpath)
@@ -62,7 +64,7 @@ else:
 			deconv=deconvolutionRGB(img,psf,i)
 		else:
 			deconv=deconvolution1Frame(img,psf,i)
-		imf.guardarImagen('C:/Users/charl/Desktop/Deconvolve_310114_1hz.bmp',deconv)
+		imf.guardarImagen(os.path.join(path,'Deconvolution_'+nameFile+'.bmp',deconv)
 	else:
 		print('La extension del archivo no es valida')
 
