@@ -5,6 +5,8 @@ import tiff as tif
 import os
 import sys
 
+color = ['g','r','b']
+
 def deconvolutionTiff(stack,stackpsfs,iterations):
 	deconv_list=[]
 	for i in range(len(stack)):
@@ -12,11 +14,16 @@ def deconvolutionTiff(stack,stackpsfs,iterations):
 		psf=imf.escalaGrises(stackpsfs[i])
 		img=imf.escalaGrises(stack[i])
 		for j in range(1):
-			#tv_denoised = denoise_tv_chambolle(imgs[i], weight=20)
-			deconv = deconvolveTF(img,psf,iterations) #Funcion de deconvolucion de imagenes
+			tv_denoised = imf.denoisingTV(img, 20)
+			deconv = deconvolveTF(tv_denoised,psf,iterations) #Funcion de deconvolucion de imagenes
+			#deconv = deconvolveTF(img,psf,iterations) #Funcion de deconvolucion de imagenes
 			deconvN = imf.normalizar(deconv) #Se normaliza la matriz 
-			deconvC = imf.elegirCanal('b',deconvN) #Se eligue un canal RGB
-			deconv_list.append(deconvC)
+			deconvC = imf.elegirCanal(color[i],deconvN) #Se eligue un canal RGB
+			#imf.guardarImagen('C:/Users/charl/Desktop/Deconvolve_'+str(i)+'310114_1hz.bmp',deconvC)
+			print(deconvN.shape)
+			#deconv8B=imf.rescaleSkimage(deconvN)
+			deconv8B=deconvC.astype("uint16")
+			deconv_list.append(deconv8B)
 	return deconv_list
 	
 def deconvolutionRGB(img,psf,iterations):
@@ -44,6 +51,7 @@ if(extention=='.tif'):
 	psfs = tif.leerTiff(psfpath)
 	deconv=deconvolutionTiff(imgs,psfs,i)
 	tif.imgtoTiff(tif.imgtoMatrix(deconv),os.path.join(path,'Deconvolution_'+nameFile+'.tif'))
+	#tif.imgtoTiff(deconv,os.path.join(path,'Deconvolution_'+nameFile+'.tif'))
 else:
 	if(extention=='.jpg' or extention=='.png' or extention=='.bmp'):
 		img = imf.imgReadCv2(imgpath) #Leemos la imagen a procesar 

@@ -2,7 +2,15 @@ run pip install opencv-python
 run pip install opencv-contrib-python
 run pip install opencv-python-headless
 run pip install opencv-contrib-python-headless
+
 pip install scipy
+pip install opencv-python
+pip install numpy
+pip install -U scikit-image
+pip install flowdec
+pip install scipy
+pip install tensorflow
+pip install tifffile
 
 pip3 install numpy or apt-get install python3-numpy. You may need to apt-get install python3-pip.
 
