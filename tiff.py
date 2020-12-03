@@ -6,6 +6,7 @@ from skimage import io
 #Funcion que lee un archivo .tif
 def readTiff(fileTiff):
 	img = io.imread(fileTiff) #Lee el archivo .tif
+	#
 	return img
 	
 #Funcion que convierte una matriz multidimensional a un archivo .tif

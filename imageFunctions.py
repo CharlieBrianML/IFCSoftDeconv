@@ -31,7 +31,7 @@ def guardarImagen(nameFile, img):
 	
 def escalaGrises(img):
 	return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-	
+#	
 def denoisingTV(img,value):
 	return denoise_tv_chambolle(img, weight=value)
 	
