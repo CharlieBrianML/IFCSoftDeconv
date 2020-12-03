@@ -38,6 +38,15 @@ def denoisingTV(img,value):
 def imgReadCv2(nameImg):
 	return cv2.imread(nameImg)
 
+def validatePSF(tiff,psf):
+	if(tiff.shape==psf.shape):
+		return True
+def istiffRGB(tiff):
+	if(tiff[len(tiff)-1]==3):
+		return True
+	else:
+		return False
+	
 #Funcion para elegir el canal de la matriz       
 def elegirCanal(canal,matrix):
 	img = np.zeros((matrix.shape[0], matrix.shape[1],3))
