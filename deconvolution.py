@@ -101,7 +101,7 @@ if (os.path.exists(imgpath) and os.path.exists(psfpath)):
 				bar = Bar("\nProcessing: "+nameFile+extImage, max=1)
 				print('\n')
 				if(img.ndim>1):
-					warnings.filterwarnings('ignore', '.*',)
+					#warnings.filterwarnings('ignore', '.*',)
 					deconv=deconvolutionRGB(img,psf,i,weight)
 					bar.next()
 					bar.finish()
