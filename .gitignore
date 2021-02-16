@@ -1,2 +1,5 @@
-Data
-__pycache__
+/Data/
+/__pycache__/
+/build/
+/dist/
+Deconvolutions

@@ -8,6 +8,8 @@ import sys
 import tifffile
 import numpy as np
 
+message = ''
+
 def deconvolutionTiff(img,psf,iterations,weight):
 	#deconv_list=img
 	
@@ -57,63 +59,76 @@ def deconvolution1Frame(img,psf,iterations):
 	deconvN=imf.normalizar(deconv)
 	return deconvN
 	
-to=time()
 
-# Construct the argument parse and parse the arguments
-imgpath, psfpath, i , weight = sys.argv[1:5]
-if (os.path.exists(imgpath) and os.path.exists(psfpath)):
-	nameFile, extImage = os.path.splitext(imgpath) #Se separa el nombre de la imagen y la extesion
-	extPSF = os.path.splitext(psfpath)[1] #Se obtiene la extesion de la psf
-	nameFile = nameFile.split('/')[len(nameFile.split('/'))-1] #Extrae el nombre de la imagen si no se encuentra en el mismo direcctorio
-	weight=int(weight)
-	path = os.path.dirname(os.path.realpath(sys.argv[0])) #Direcctorio donde se almacenara el resultado
-	#path = "C:/Users/"+os.getlogin()+"/Desktop"-
-	savepath = os.path.join(path,'Deconvolutions/Deconvolution_'+nameFile+'.tif')
-	
-	if(extImage=='.tif'):
-		tiff = tif.readTiff(imgpath)
-		dimtiff = tiff.ndim
-		psf = tif.readTiff(psfpath)
-		tiffdeconv = tiff
-		if(imf.validatePSF(tiff,psf)):
-			print('\nFiles are supported\nStarting deconvolution')
-			if(dimtiff==2):
-				tiffdeconv = deconvolution1Frame(tiff,psf,i,weight)
-			if(dimtiff==3):
-				if(tif.istiffRGB(tiff.shape)):
-					tiffdeconv = deconvolutionRGB(tiff,psf,i,weight)
-				else:
+def deconvolutionMain(imgpath,psfpath,i,weight):
+	global message
+	to=time()
+	# Construct the argument parse and parse the arguments
+	#imgpath, psfpath, i , weight = sys.argv[1:5]
+	if (os.path.exists(imgpath) and os.path.exists(psfpath)):
+		nameFile, extImage = os.path.splitext(imgpath) #Se separa el nombre de la imagen y la extesion
+		extPSF = os.path.splitext(psfpath)[1] #Se obtiene la extesion de la psf
+		nameFile = nameFile.split('/')[len(nameFile.split('/'))-1] #Extrae el nombre de la imagen si no se encuentra en el mismo direcctorio
+		weight=int(weight)
+		path = os.path.dirname(os.path.realpath(sys.argv[0])) #Direcctorio donde se almacenara el resultado
+		#path = "C:/Users/"+os.getlogin()+"/Desktop"-
+		savepath = os.path.join(path,'Deconvolutions\Deconvolution_'+nameFile+'.tif')
+		
+		if(extImage=='.tif'):
+			tiff = tif.readTiff(imgpath)
+			dimtiff = tiff.ndim
+			psf = tif.readTiff(psfpath)
+			tiffdeconv = tiff
+			if(imf.validatePSF(tiff,psf)):
+				message = '\nFiles are supported\nStarting deconvolution'
+				print(message)
+				if(dimtiff==2):
+					tiffdeconv = deconvolution1Frame(tiff,psf,i,weight)
+				if(dimtiff==3):
+					if(tif.istiffRGB(tiff.shape)):
+						tiffdeconv = deconvolutionRGB(tiff,psf,i,weight)
+					else:
+						tiffdeconv = deconvolutionTiff(tiff,psf,i,weight)
+				if(dimtiff==4):
 					tiffdeconv = deconvolutionTiff(tiff,psf,i,weight)
-			if(dimtiff==4):
-				tiffdeconv = deconvolutionTiff(tiff,psf,i,weight)
+			else:
+				message = 'Wrong psf dimention, please enter a valid psf'
+				print(message)
+				exit()
+			tifffile.imsave(savepath, tiffdeconv, imagej=True)
+			message = 'Deconvolution successful, end of execution'
+			print(message)
 		else:
-			print('Wrong psf dimention, please enter a valid psf')
-			exit()
-		tifffile.imsave(savepath, tiffdeconv, imagej=True)
-		print('Deconvolution successful, end of execution')
-	else:
-		if(extImage=='.jpg' or extImage=='.png' or extImage=='.bmp'):
-			if(extPSF=='.jpg' or extPSF=='.png' or extPSF=='.bmp'):
-				img = imf.imgReadCv2(imgpath) #Leemos la imagen a procesar 
-				psf = imf.imgReadCv2(psfpath) #Leemos la psf de la imagen
-				psf=imf.escalaGrises(psf)
-				print('\nFiles are supported\nStarting deconvolution')
-				bar = Bar("\nProcessing: "+nameFile+extImage, max=1)
-				print('\n')
-				if(img.ndim>1):
-					#warnings.filterwarnings('ignore', '.*',)
-					deconv=deconvolutionRGB(img,psf,i,weight)
-					bar.next()
-					bar.finish()
-				else:
-					deconv=deconvolution1Frame(img,psf,i)
-				imf.guardarImagen(os.path.join(path,'Deconvolution_'+nameFile+'.bmp'),deconv)
-				#bar.finish()
-				print('Deconvolution successful, end of execution')
-		else:
-			print('The file extension is not valid')
-	tf=time()
-	tt=tf-to
-	print("Runtime: ",tt/60, "minutes")
-else: 
-	print('There is no file or directory of the image or psf')
+			if(extImage=='.jpg' or extImage=='.png' or extImage=='.bmp'):
+				if(extPSF=='.jpg' or extPSF=='.png' or extPSF=='.bmp'):
+					img = imf.imgReadCv2(imgpath) #Leemos la imagen a procesar 
+					psf = imf.imgReadCv2(psfpath) #Leemos la psf de la imagen
+					psf=imf.escalaGrises(psf)
+					message = '\nFiles are supported\nStarting deconvolution'
+					print(message)
+					message = "\nProcessing: "+nameFile+extImage
+					bar = Bar(message, max=1)
+					print('\n')
+					if(img.ndim>1):
+						#warnings.filterwarnings('ignore', '.*',)
+						deconv=deconvolutionRGB(img,psf,i,weight)
+						bar.next()
+						bar.finish()
+					else:
+						deconv=deconvolution1Frame(img,psf,i)
+					#imf.guardarImagen(os.path.join(savepath,'\Deconvolution_'+nameFile+'.bmp'),deconv)
+					imf.guardarImagen(os.getcwd()+'\Deconvolutions\Deconvolution_'+nameFile+'.bmp',deconv)
+					#print(savepath,'\Deconvolution_'+nameFile+'.bmp')
+					#bar.finish()
+					message = 'Deconvolution successful, end of execution'
+					print(message)
+			else:
+				message = 'The file extension is not valid'
+				print(message)
+		tf=time()
+		tt=tf-to
+		print("Runtime: ",tt/60, "minutes")
+	else: 
+		message = 'There is no file or directory of the image or psf'
+		print(message)
+	message = ''
