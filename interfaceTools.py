@@ -11,6 +11,7 @@ mainWindow = Tk()
 file = ''
 filesName = []
 filesPath = []
+statusbar = None
 
 def openFile():
 	global file
@@ -68,9 +69,10 @@ def createStringVar():
 	return nombre
 	
 def createStatusBar():
-	statusbar = Label(mainWindow, text='', bd=1, relief=SUNKEN, anchor=W)
+	global statusbar
+	statusbar = Label(mainWindow, text='IFCSoftDeconv v2.0.0', bd=1, relief=SUNKEN, anchor=W)
 	statusbar.pack(side=BOTTOM, fill=X)
-	return statusbar
+	#return statusbar
 	
 class NewWindow:
 	#img = ''

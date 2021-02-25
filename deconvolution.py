@@ -1,4 +1,6 @@
 from time import time
+from time import sleep
+import interfaceTools as it
 from progress.bar import Bar, ChargingBar
 import imageFunctions as imf
 from deconvTF import deconvolveTF
@@ -106,7 +108,11 @@ def deconvolutionMain(imgpath,psfpath,i,weight):
 					psf=imf.escalaGrises(psf)
 					message = '\nFiles are supported\nStarting deconvolution'
 					print(message)
+					it.statusbar['text']=message
+					sleep(1)
 					message = "\nProcessing: "+nameFile+extImage
+					it.statusbar['text']=message
+					sleep(1)
 					bar = Bar(message, max=1)
 					print('\n')
 					if(img.ndim>1):
@@ -122,12 +128,16 @@ def deconvolutionMain(imgpath,psfpath,i,weight):
 					#bar.finish()
 					message = 'Deconvolution successful, end of execution'
 					print(message)
+					it.statusbar['text']=message
+					sleep(1)
 			else:
 				message = 'The file extension is not valid'
 				print(message)
 		tf=time()
 		tt=tf-to
 		print("Runtime: ",tt/60, "minutes")
+		it.statusbar['text']="Runtime: "+str(tt/60)+"minutes"
+		sleep(1)
 	else: 
 		message = 'There is no file or directory of the image or psf'
 		print(message)
