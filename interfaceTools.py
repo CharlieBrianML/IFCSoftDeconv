@@ -75,22 +75,22 @@ def createStatusBar():
 	#return statusbar
 	
 class NewWindow:
-	#img = ''
-	# imgParameter=''
-	# psfParameter=''
-	# itrParameter=''
-	# wgtParameter=''
-	# def __init__(self,nameWindow):
-		# self.window = Toplevel(mainWindow)
-		# self.window.title(nameWindow)
 	
 	def __init__(self,nameWindow,size = None):
+		self.nameWindow = nameWindow
 		self.window = Toplevel(mainWindow)
+		self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
 		self.window.geometry(size) # anchura x altura
 		#self.window.configure(bg = 'beige')
 		self.window.resizable(width=False,height=False)
-		self.window.title(nameWindow)
+		self.window.title(self.nameWindow)
 		self.img = None
+		
+	def on_closing(self):
+		print('Se cerro: ', self.nameWindow)
+		self.window.destroy()
+		if (self.nameWindow in filesName):
+			filesName.remove(self.nameWindow)
 		
 	def placeImage(self,file):
 		#global img
@@ -120,6 +120,7 @@ class NewWindow:
 		global files
 		#dropdown = ttk.Combobox(self.window, state="readonly",values = ["Python", "C", "C++", "Java"])
 		dropdown = ttk.Combobox(self.window, state="readonly",values = filesName)
-		dropdown.current(0)
 		dropdown.place(x=x, y=y)
+		if (len(filesName)>0):
+			dropdown.current(0)
 		return dropdown
