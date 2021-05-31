@@ -18,11 +18,23 @@ def openFile():
 	file = fd.askopenfilename(initialdir = os.getcwd(), title = 'Seleccione archivo', defaultextension = '*.*', filetypes = (('png files','*.png'),('jpg files','*.jpg'),('bmp files','*.bmp'),('tif files','*.tif')))
 	if(len(file)>0):
 		filesPath.append(file)
-		venImg = NewWindow(file.split('/')[len(file.split('/'))-1])
-		#newVen = venImg.createNewWindow(file.split('/')[len(file.split('/'))-1])
-		venImg.placeImage(file)
+		nameFile = file.split('/')[len(file.split('/'))-1]
+		if(os.path.splitext(nameFile)[1]=='.tif'):
+			print('Este es un tif')
+			venImg = NewWindow(nameFile)
+			scrollbar = Scrollbar(venImg.window, orient=HORIZONTAL, takefocus=10)
+			scrollbar.pack(side="top", fill="x")
+			scrollbar.config(command=scrollImage)
+			venImg.placeImage(file)
+		else:
+			venImg = NewWindow(nameFile)
+			#newVen = venImg.createNewWindow(file.split('/')[len(file.split('/'))-1])
+			venImg.placeImage(file)
 	#venImg = createNewWindow(file)
 	#placeImage(venImg, file)
+	
+def scrollImage(*args):
+	print('Estoy desplazando la imagen')
 	
 def saveFile():
 	global file
@@ -99,9 +111,9 @@ class NewWindow:
 		#fileImage=Image.open(file)
 		self.img = ImageTk.PhotoImage(Image.open(file))
 		#self.img = PhotoImage(Image.open(file))
-		panel = Label(self.window, image = self.img)
-		panel.image = self.img
-		panel.pack()
+		self.panel = Label(self.window, image = self.img)
+		self.panel.image = self.img
+		self.panel.pack()
 		
 	def createButton(self,text, command, side):
 		ttk.Button(self.window, text=text, command=command).pack(side=side)	
